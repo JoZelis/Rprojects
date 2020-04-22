@@ -137,7 +137,7 @@ if (isTRUE(any(nl==as.character(dateRIVM)))){
 }
 
 # daily average and rolling average calculations
-merged_dta = merged_dta %>% arrange(country, date) #arrange by country and date
+merged_dta <- merged_dta %>% arrange(country, date) #arrange by country and date
 merged_dta <- ddply(merged_dta, .(country), mutate, dailyDeaths = deaths - lag(deaths)) # country here is used to group the data
 merged_dta <- ddply(merged_dta, .(country), mutate, dailyConfirmed = confirmed - lag(confirmed))
 merged_dta <- ddply(merged_dta, .(country), mutate, avDailyDeaths05 = rollmean(dailyDeaths, k = 5, fill = NA))
@@ -152,7 +152,7 @@ merged_dta <- ddply(merged_dta, .(country), mutate, deaths_1e5pop = 1e5*deaths/p
 merged_dta <- ddply(merged_dta, .(country), mutate, confirmed_1e5pop = 1e5*confirmed/population)
 
 # filter countries by more than 10 deaths
-death_dta = merged_dta
+death_dta <- merged_dta
 death_dta %>%
   group_by(country) %>%
   filter(deaths >= 10) %>%
@@ -170,7 +170,7 @@ death_dta %>%
   ungroup() -> death_dta
 
 #filter countries by more than 100 confirmed
-confirmed_dta = merged_dta
+confirmed_dta <- merged_dta
 confirmed_dta %>% 
   group_by(country) %>%
   filter(confirmed >= 100) %>%

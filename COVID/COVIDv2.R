@@ -27,45 +27,6 @@ lab_notes <- paste0(
 # make a tibble database from the original one as_tibble(merged_dta) to work easier
 #summary(merged_dta) summary of the data
 
-#add new row to the Netherlands for previous day
-new_row_LagDay <-
-  data.frame(
-    country = "Netherlands",
-    iso3c = "NLD",
-    date = as.Date(Sys.Date())-1, #updated for 20-04-2020
-    confirmed = 33405,
-    deaths = 3751,
-    recovered = NA,
-    soc_dist = NA,
-    mov_rest = NA,
-    pub_health = NA,
-    gov_soc_econ = NA,
-    lockdown = NA,
-    apple_mtr_driving = NA,
-    apple_mtr_walking = NA,
-    apple_mtr_transit = NA,
-    gcmr_retail_recreation = NA,
-    gcmr_grocery_pharmacy = NA,
-    gcmr_parks = NA,
-    gcmr_transit_stations = NA,
-    gcmr_workplaces = NA,
-    gcmr_residential = NA,
-    gtrends_score = NA,
-    gtrends_country_score = NA,
-    region = "Europe & Central Asia",
-    income = "High income",
-    population = 17231017,
-    land_area_skm = 33690,
-    pop_density = 511.4579,
-    pop_largest_city = 1131690,
-    life_expectancy = 81.76098,
-    gdp_capita = 	55022.92,
-    timestamp = format(Sys.Date(), tz="") #remove timezone
-  )
-# combine row with whole dataframe
-merged_dta <-
-  rbind(merged_dta, new_row_LagDay)
-
 # add numbers with web scraping
 url <- "https://www.rivm.nl/coronavirus-covid-19/actueel" #define RIVM site
 RIVM <- read_html(url)
@@ -88,6 +49,52 @@ dateRIVM <- html_nodes(RIVM,
   strapplyc("[0-9-]{10,}", simplify=TRUE) %>% #extract 10 characters (in this case date) with "-" in the string
   strptime("%d-%m-%Y") #convert to date format
 
+#add new row to the Netherlands for previous day
+if (isTRUE(dateRIVM == Sys.Date()-1)){
+  paste("Date for", as.Date(Sys.Date()-1), "is the same as RIVM update!")
+} else if (isTRUE(any(nl==as.character(Sys.Date()-1)))){
+  paste("Data for", as.Date(Sys.Date()-1), "is already in the dataframe!")
+} else {
+  new_row_LagDay <-
+    data.frame(
+      country = "Netherlands",
+      iso3c = "NLD",
+      date = as.Date(Sys.Date())-1, #updated for 20-04-2020
+      confirmed = 33405,
+      deaths = 3751,
+      recovered = NA,
+      soc_dist = NA,
+      mov_rest = NA,
+      pub_health = NA,
+      gov_soc_econ = NA,
+      lockdown = NA,
+      apple_mtr_driving = NA,
+      apple_mtr_walking = NA,
+      apple_mtr_transit = NA,
+      gcmr_retail_recreation = NA,
+      gcmr_grocery_pharmacy = NA,
+      gcmr_parks = NA,
+      gcmr_transit_stations = NA,
+      gcmr_workplaces = NA,
+      gcmr_residential = NA,
+      gtrends_score = NA,
+      gtrends_country_score = NA,
+      region = "Europe & Central Asia",
+      income = "High income",
+      population = 17231017,
+      land_area_skm = 33690,
+      pop_density = 511.4579,
+      pop_largest_city = 1131690,
+      life_expectancy = 81.76098,
+      gdp_capita = 	55022.92,
+      timestamp = format(Sys.Date(), tz="") #remove timezone
+    )
+  # combine row with whole dataframe
+  merged_dta <-
+    rbind(merged_dta, new_row_LagDay)
+}
+
+# add data RIVM to dataframe
 if (isTRUE(any(nl==as.character(dateRIVM)))){
   paste("Data for", as.Date(dateRIVM), "is already in the dataframe!")
 } else {

@@ -1,6 +1,6 @@
 # Title     : COVIDdirectlyFromJH
 # Objective : Try to get the data directly from JH github
-# Created by: jo
+# Created by: Jo
 # Created on: 22-4-2020
 library(knitr)
 library(tidyverse)

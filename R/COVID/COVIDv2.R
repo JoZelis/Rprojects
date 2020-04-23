@@ -1,6 +1,6 @@
 # Title     : COVIDNL
 # Objective : COVID data updated directly from the RIVM for the Netherlands
-# Created by: jo
+# Created by: Jo
 # Created on: 01-4-2020
 # install from github with library(devtools) and than command devtools::install_github("joachim-gassen/tidycovid19")
 library(tidycovid19) #covid data importer van joachim-gassen.githubio

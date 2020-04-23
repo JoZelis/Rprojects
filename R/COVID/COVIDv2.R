@@ -64,9 +64,9 @@ if (isTRUE(dateRIVM == Sys.Date()-1)){
     data.frame(
       country = "Netherlands",
       iso3c = "NLD",
-      date = as.Date(Sys.Date())-1, #updated for 21-04-2020
-      confirmed = 34134,
-      deaths = 3916,
+      date = as.Date(Sys.Date())-1, #updated for 23-04-2020
+      confirmed = 35729,
+      deaths = 4177,
       recovered = NA,
       soc_dist = NA,
       mov_rest = NA,
@@ -326,7 +326,7 @@ ggplot(df %>% filter (edate_deaths <= 70),
   ) + gg_my_blob
 
 # plot for deaths relative to population
-ggplot(df %>% filter (edate_deaths <= 70), 
+ggplot(df %>% filter (edate_deaths <= 70),
        aes(x = edate_deaths, color = country, y = deaths_1e5pop)) +
   geom_line() +
   gg_my_blob +

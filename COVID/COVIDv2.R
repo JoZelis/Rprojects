@@ -1,3 +1,7 @@
+# Title     : COVIDNL
+# Objective : COVID data updated directly from the RIVM for the Netherlands
+# Created by: jo
+# Created on: 01-4-2020
 # install from github with library(devtools) and than command devtools::install_github("joachim-gassen/tidycovid19")
 library(tidycovid19) #covid data importer van joachim-gassen.githubio
 library(plyr)
@@ -21,6 +25,7 @@ lab_notes <- paste0(
 )
 
 #View(merged_dta)
+
 #sum(is.na(marged_dta)) gives the total missing values
 # further visualization of missing data at the end of the script
 #

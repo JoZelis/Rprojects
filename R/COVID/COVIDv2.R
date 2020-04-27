@@ -64,9 +64,9 @@ if (isTRUE(dateRIVM == Sys.Date()-1)){
     data.frame(
       country = "Netherlands",
       iso3c = "NLD",
-      date = as.Date(Sys.Date())-1, #updated for 24-04-2020
-      confirmed = 36535,
-      deaths = 4289,
+      date = as.Date(Sys.Date())-1, #updated for 26-04-2020
+      confirmed = 37845,
+      deaths = 4475,
       recovered = NA,
       soc_dist = NA,
       mov_rest = NA,
@@ -294,7 +294,8 @@ death_dta %>% filter(
     country == "Belgium" |
     country == "Korea, South" |
     country == "Japan" | 
-    country == "US"
+    country == "US" |
+    country == "Sweden"
 ) -> df
 
 # text directly under figure left
@@ -345,7 +346,8 @@ confirmed_dta %>% filter(
     country == "Belgium" |
     country == "Korea, South" |
     country == "Japan" | 
-    country == "US"
+    country == "US" |
+    country == "Sweden"
 ) -> dfc
 
 lab_x_axis_confirmed <- sprintf(paste(

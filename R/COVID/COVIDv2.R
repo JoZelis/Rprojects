@@ -64,9 +64,9 @@ if (isTRUE(dateRIVM == Sys.Date()-1)){
     data.frame(
       country = "Netherlands",
       iso3c = "NLD",
-      date = as.Date(Sys.Date())-1, #updated for 26-04-2020
-      confirmed = 37845,
-      deaths = 4475,
+      date = as.Date(Sys.Date())-1, #updated for 27-04-2020
+      confirmed = 38245,
+      deaths = 4518,
       recovered = NA,
       soc_dist = NA,
       mov_rest = NA,
@@ -193,10 +193,10 @@ confirmed_dta %>%
   ungroup() -> confirmed_dta
 
 # plot for rolling average over 7 days edate_deaths and death_dta is used for date so after 10th death, full data x = date
-death_dta %>% filter(country == "Netherlands") -> cf #filter Netherlands data
+confirmed_dta %>% filter(country == "Netherlands") -> cf #filter Netherlands data
 #to plot with legend go from wide to long
 long_cf <- cf %>% gather(State, Total, avDailyDeaths07:avDailyConfirmed07)
-ggplot(long_cf, aes(x = edate_deaths, y = Total, group = State, colour = State)) + 
+ggplot(long_cf, aes(x = edate_confirmed, y = Total, group = State, colour = State)) + 
   geom_line() +
   scale_colour_discrete(name = "Cases",
                         labels=c("Confirmed","Deaths")
@@ -209,7 +209,7 @@ ggplot(long_cf, aes(x = edate_deaths, y = Total, group = State, colour = State))
     axis.title.x = element_text(hjust = 1),
     axis.title.y = element_text(hjust = 1),) +
   labs(caption = lab_notes, 
-       x = "Number of days since 10th death", 
+       x = "Number of days since 100th confirmed case", 
        y = "Change in cases",
        title = "Total change in deaths and confirmed cases for the Netherlands (7-day moving average)"
   )

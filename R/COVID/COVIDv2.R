@@ -8,7 +8,7 @@ library(plyr)
 library(ggrepel) # for repelling overlapping stuff in plots
 library(gghighlight)
 library(tidyverse) # contains ggplot2, dplyr, readr among others
-library(lubridate) # for data management
+library(lubridate) # for date management
 library(zoo) # for rolling average
 library(rvest) # for web scraping
 library(gsubfn) #for modifying string data

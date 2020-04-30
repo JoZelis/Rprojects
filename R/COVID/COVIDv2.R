@@ -64,9 +64,9 @@ if (isTRUE(dateRIVM == Sys.Date()-1)){
     data.frame(
       country = "Netherlands",
       iso3c = "NLD",
-      date = as.Date(Sys.Date())-1, #updated for 28-04-2020
-      confirmed = 38416,
-      deaths = 4566,
+      date = as.Date(Sys.Date())-1, #updated for 29-04-2020
+      confirmed = 38802,
+      deaths = 4711,
       recovered = NA,
       soc_dist = NA,
       mov_rest = NA,
@@ -152,6 +152,8 @@ merged_dta <- ddply(merged_dta, .(country), mutate, avDailyConfirmed07 = rollmea
 # growth rate calculations
 merged_dta <- ddply(merged_dta, .(country), mutate, Rate_percentC = dailyConfirmed/confirmed * 100)# growth rate in percent for confirmed cases
 merged_dta <- ddply(merged_dta, .(country), mutate, Rate_percentD = dailyDeaths/deaths * 100)# growth rate in percent for deaths
+merged_dta <- ddply(merged_dta, .(country), mutate, avConfGR07 = rollmean(Rate_percentC, k = 7, fill = NA)) # growth rate of death (7 day moving average)
+merged_dta <- ddply(merged_dta, .(country), mutate, avDeathGR07 = rollmean(Rate_percentD, k = 7, fill = NA)) # growth rate of death (7 day moving average)
 # deaths and confirmed per country population
 merged_dta <- ddply(merged_dta, .(country), mutate, deaths_1e5pop = 1e5*deaths/population)
 merged_dta <- ddply(merged_dta, .(country), mutate, confirmed_1e5pop = 1e5*confirmed/population)
@@ -210,7 +212,7 @@ ggplot(long_cf, aes(x = edate_confirmed, y = Total, group = State, colour = Stat
     axis.title.y = element_text(hjust = 1),) +
   labs(caption = lab_notes, 
        x = "Number of days since 100th confirmed case", 
-       y = "Change in cases",
+       y = "Daily change in cases",
        title = "Total change in deaths and confirmed cases for the Netherlands (7-day moving average)"
   )
 
@@ -224,7 +226,7 @@ death_dta %>% filter(country == "Netherlands" |
                        country == "Italy") -> grd # "growth rate death" copy of data for filter countries
 
 ggplot(grd %>%  filter (edate_deaths <= 70), # edate deaths is how many days you want to display from 10th death
-       aes(x = edate_deaths, color = country, y = Rate_percentD)) +
+       aes(x = edate_deaths, color = country, y = Rate_percentD)) + # use avDeathGR07 for 7 day moving average
   geom_line() + theme_minimal() + 
   theme(
     plot.title.position = "plot", 
@@ -266,7 +268,7 @@ confirmed_dta %>% filter(country == "Netherlands" |
 ) -> grc # copy of data for filter countries
 
 ggplot(grc %>%  filter (edate_confirmed <= 70),
-       aes(x = edate_confirmed, color = country, y = Rate_percentC)) +
+       aes(x = edate_confirmed, color = country, y = Rate_percentC)) + # use avConfGR07 for 7 day moving average
   geom_line() + theme_minimal() + 
   theme(
     plot.title.position = "plot", 

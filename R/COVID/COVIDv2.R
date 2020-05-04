@@ -43,7 +43,7 @@ conf <- html_nodes(RIVM, #get confirmed data
   as.numeric()#convert the string to number
 
 death <- html_nodes(RIVM, #get death data
-                    '#top > article > div > div:nth-child(2) > div > div > div > div.par.content-block-wrapper.bg-brand-lightest > div > table > tbody > tr:nth-child(3) > td:nth-child(2) > span > span') %>%
+                    '#top > article > div > div:nth-child(2) > div > div > div > div.par.content-block-wrapper.bg-brand-lightest > div > table > tbody > tr:nth-child(3) > td:nth-child(2)') %>%
   html_text() %>% #read the HTML text of confirmed
   str_replace_all("[[:punct:]]", "") %>% #remove the punctuations from the number
   as.numeric()#convert the string to number
@@ -152,11 +152,15 @@ merged_dta <- ddply(merged_dta, .(country), mutate, avDailyConfirmed07 = rollmea
 # growth rate calculations
 merged_dta <- ddply(merged_dta, .(country), mutate, Rate_percentC = dailyConfirmed/confirmed * 100)# growth rate in percent for confirmed cases
 merged_dta <- ddply(merged_dta, .(country), mutate, Rate_percentD = dailyDeaths/deaths * 100)# growth rate in percent for deaths
-merged_dta <- ddply(merged_dta, .(country), mutate, avConfGR07 = rollmean(Rate_percentC, k = 7, fill = NA)) # growth rate of death (7 day moving average)
+merged_dta <- ddply(merged_dta, .(country), mutate, avConfGR07 = rollmean(Rate_percentC, k = 7, fill = NA)) # growth rate of cases (7 day moving average)
 merged_dta <- ddply(merged_dta, .(country), mutate, avDeathGR07 = rollmean(Rate_percentD, k = 7, fill = NA)) # growth rate of death (7 day moving average)
 # deaths and confirmed per country population
 merged_dta <- ddply(merged_dta, .(country), mutate, deaths_1e5pop = 1e5*deaths/population)
 merged_dta <- ddply(merged_dta, .(country), mutate, confirmed_1e5pop = 1e5*confirmed/population)
+merged_dta <- ddply(merged_dta, .(country), mutate, dailyDeathsPop = deaths_1e5pop - lag(deaths_1e5pop)) # country here is used to group the data
+merged_dta <- ddply(merged_dta, .(country), mutate, dailyConfirmedPop = confirmed_1e5pop - lag(confirmed_1e5pop))
+merged_dta <- ddply(merged_dta, .(country), mutate, avDailyDeaths07Pop = rollmean(dailyDeathsPop, k = 7, fill = NA))
+merged_dta <- ddply(merged_dta, .(country), mutate, avDailyConfirmed07Pop = rollmean(dailyConfirmedPop, k = 7, fill = NA))
 
 # filter countries by more than 10 deaths
 death_dta <- merged_dta
@@ -218,6 +222,60 @@ ggplot(long_cf, aes(x = edate_confirmed, y = Total, group = State, colour = Stat
 
 # make it interactive with library(plotly) ggplotly(the_ggplot)
 
+
+# "flatten the curve Europe" for confirmed
+confirmed_dta %>% filter(  country == "Netherlands" |
+                             country == "China" |
+                             country == "Germany" |
+                             country == "Italy" |
+                             country == "Spain" |
+                             country == "Belgium" |
+                             country == "Korea, South" |
+                             country == "Japan" | 
+                             country == "US" |
+                             country == "Sweden") -> fcc
+
+ggplot(fcc %>%  filter (edate_confirmed <= 100), # edate deaths is how many days you want to display from 10th death
+       aes(x = edate_confirmed, color = country, y = avDailyConfirmed07Pop)) + # use avDeathGR07 for 7 day moving average
+  geom_line() + theme_minimal() + 
+  theme(
+    plot.title.position = "plot", 
+    plot.caption.position =  "plot",
+    plot.caption = element_text(hjust = 0),
+    axis.title.x = element_text(hjust = 1),
+    axis.title.y = element_text(hjust = 1),) + 
+  labs(caption = lab_notes,
+       x = "Number of days since 10th death",
+       y = "%change in death",
+       title = "%Daily change in deaths relative to the population\n"
+  )
+
+# "flatten the curve Europe" for deaths
+death_dta %>% filter(  country == "Netherlands" |
+                         country == "China" |
+                         country == "Germany" |
+                         country == "Italy" |
+                         country == "Spain" |
+                         country == "Belgium" |
+                         country == "Korea, South" |
+                         country == "Japan" | 
+                         country == "US" |
+                         country == "Sweden") -> fcd
+
+ggplot(fcd %>%  filter (edate_deaths <= 70), # edate deaths is how many days you want to display from 10th death
+       aes(x = edate_deaths, color = country, y = avDailyDeaths07Pop)) + # use avDeathGR07 for 7 day moving average
+  geom_line() + theme_minimal() + 
+  theme(
+    plot.title.position = "plot", 
+    plot.caption.position =  "plot",
+    plot.caption = element_text(hjust = 0),
+    axis.title.x = element_text(hjust = 1),
+    axis.title.y = element_text(hjust = 1),) + 
+  labs(caption = lab_notes,
+       x = "Number of days since 100th confirmed case",
+       y = "%change in confirmed cases",
+       title = "%Daily change in confirmed cases relative to the population\n"
+  )
 
 # Growth rate or %daily change of deaths per selected county
 

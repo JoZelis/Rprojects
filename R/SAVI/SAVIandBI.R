@@ -1,5 +1,4 @@
 library(tidyverse)
-library(plotly) # for interactive plots
 setwd("~/R/BuckbergIndex") #set directory
 BI <- read_csv("~/R/BuckbergIndex/graosd180709.csv") #data per beat (so not per measuring point)
 pt <- read_csv("~/R/BuckbergIndex/aos-stress_csv/aos01_pre.csv") #data per measuring point for patient # pre/post
@@ -71,4 +70,18 @@ points(x.points,y.points,col='blue')
 start.segment <- joint.points[-1][diff(joint.points) == 1] - 1
 for (i in start.segment) lines(x = c(i, i+1), y = x1[c(i, i+1)], col = 'blue')
 
+# integrate
+line_integral <- function(x, y) {
+  dx <- diff(x)
+  end <- length(y)
+  my <- (y[1:(end - 1)] + y[2:end]) / 2
+  sum(dx *my)
+} 
+line_integral(p$Ao, p$LV)
 
+f1 <- approxfun(probClass, prob1-prob2)     # piecewise linear function
+f2 <- function(x) abs(f1(x))                 # take the positive value
+
+integrate(f2, 0, 0.9)
+
+geiger:::.area.between.curves(pt$ID, pt$Ao, pt$LV, xrange = c(70,120))

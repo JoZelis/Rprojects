@@ -64,9 +64,9 @@ if (isTRUE(dateRIVM == Sys.Date()-1)){
     data.frame(
       country = "Netherlands",
       iso3c = "NLD",
-      date = as.Date(Sys.Date())-1, #updated for 29-04-2020
-      confirmed = 38802,
-      deaths = 4711,
+      date = as.Date(Sys.Date())-1, #updated for 03-05-2020
+      confirmed = 40571,
+      deaths = 5056,
       recovered = NA,
       soc_dist = NA,
       mov_rest = NA,
@@ -281,7 +281,7 @@ ggplot(grc %>%  filter (edate_confirmed <= 70),
        x = "Number of days since 100th confirmed case",
        y = "%change in confirmed cases",
        title = "%Daily change in confirmed cases per country\n"
-  )+ geom_smooth(method = "lm")
+  ) + geom_smooth(method = "lm")
 
 # plots for deaths per country
 # define event time after 10th death
@@ -323,13 +323,13 @@ gg_my_blob <- list(
 )
 
 # plot for total deaths
-ggplot(df %>% filter (edate_deaths <= 70), 
+ggplot(df %>% filter (edate_deaths <= 100), 
        aes(x = edate_deaths, color = country, y = deaths)) +
   geom_line() + labs(title = "Total Deaths per Country\n"
   ) + gg_my_blob
 
 # plot for deaths relative to population
-ggplot(df %>% filter (edate_deaths <= 70),
+ggplot(df %>% filter (edate_deaths <= 100),
        aes(x = edate_deaths, color = country, y = deaths_1e5pop)) +
   geom_line() +
   gg_my_blob +
@@ -375,7 +375,7 @@ gg_my_blob <- list(
 )
 
 # plot for confirmed cases per county
-ggplot(dfc %>% filter (edate_confirmed <= 70), 
+ggplot(dfc %>% filter (edate_confirmed <= 100), 
        aes(x = edate_confirmed, color = country, y = confirmed)) +
   geom_line() +
   labs(
@@ -384,7 +384,7 @@ ggplot(dfc %>% filter (edate_confirmed <= 70),
   gg_my_blob
 
 # plot for confirmed relative to population
-ggplot(dfc %>% filter (edate_confirmed <= 70), 
+ggplot(dfc %>% filter (edate_confirmed <= 100), 
        aes(x = edate_confirmed, color = country, y = confirmed_1e5pop)) +
   geom_line() +
   gg_my_blob +

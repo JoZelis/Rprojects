@@ -19,9 +19,9 @@ merged_dta %>% filter(country == "Netherlands") -> nl # data with filter Netherl
 # text under figure
 lab_notes <- paste0(
   "Data as provided by Johns Hopkins University Center for Systems Science ", 
-  "and Engineering (JHU CSSE)\nand obtained on ", Sys.Date(),
-  " through tidycovid19 library from https://joachim-gassen.github.io.The sample\n", 
-  "is limited to countries with at least seven days of positive event days data.\n" 
+  "and Engineering (JHU CSSE)\nand RIVM.nl obtained on ", Sys.Date(),
+  " through tidycovid19 library from https://joachim-gassen.github.io.The\n", 
+  "sample is limited to countries with at least seven days of positive event days data.\n" 
 )
 
 #View(merged_dta)
@@ -64,9 +64,9 @@ if (isTRUE(dateRIVM == Sys.Date()-1)){
     data.frame(
       country = "Netherlands",
       iso3c = "NLD",
-      date = as.Date(Sys.Date())-1, #updated for 03-05-2020
-      confirmed = 40571,
-      deaths = 5056,
+      date = as.Date(Sys.Date())-1, #updated for 05-05-2020
+      confirmed = 41087,
+      deaths = 5168,
       recovered = NA,
       soc_dist = NA,
       mov_rest = NA,
@@ -233,7 +233,8 @@ confirmed_dta %>% filter(  country == "Netherlands" |
                              country == "Korea, South" |
                              country == "Japan" | 
                              country == "US" |
-                             country == "Sweden") -> fcc
+                             country == "Sweden"|
+                             country == "Russia") -> fcc
 
 ggplot(fcc %>%  filter (edate_confirmed <= 100), # edate deaths is how many days you want to display from 10th death
        aes(x = edate_confirmed, color = country, y = avDailyConfirmed07Pop)) + # use avDeathGR07 for 7 day moving average
@@ -246,8 +247,8 @@ ggplot(fcc %>%  filter (edate_confirmed <= 100), # edate deaths is how many days
     axis.title.y = element_text(hjust = 1),) + 
   labs(caption = lab_notes,
        x = "Number of days since 10th death",
-       y = "%change in death",
-       title = "%Daily change in deaths relative to the population\n"
+       y = "Death rate per 100.000",
+       title = "%Daily change in deaths relative to the population (7-day moving average)\n"
   )
 
 # "flatten the curve Europe" for deaths
@@ -260,7 +261,8 @@ death_dta %>% filter(  country == "Netherlands" |
                          country == "Korea, South" |
                          country == "Japan" | 
                          country == "US" |
-                         country == "Sweden") -> fcd
+                         country == "Sweden"|
+                       country == "Russia") -> fcd
 
 ggplot(fcd %>%  filter (edate_deaths <= 70), # edate deaths is how many days you want to display from 10th death
        aes(x = edate_deaths, color = country, y = avDailyDeaths07Pop)) + # use avDeathGR07 for 7 day moving average
@@ -273,8 +275,8 @@ ggplot(fcd %>%  filter (edate_deaths <= 70), # edate deaths is how many days you
     axis.title.y = element_text(hjust = 1),) + 
   labs(caption = lab_notes,
        x = "Number of days since 100th confirmed case",
-       y = "%change in confirmed cases",
-       title = "%Daily change in confirmed cases relative to the population\n"
+       y = "Confirmed rate per 100.000",
+       title = "%Daily change in confirmed cases relative to the population (7-day moving average)\n"
   )
 
 # Growth rate or %daily change of deaths per selected county
@@ -355,7 +357,8 @@ death_dta %>% filter(
     country == "Korea, South" |
     country == "Japan" | 
     country == "US" |
-    country == "Sweden"
+    country == "Sweden" |
+    country == "Russia"
 ) -> df
 
 # text directly under figure left
@@ -407,7 +410,8 @@ confirmed_dta %>% filter(
     country == "Korea, South" |
     country == "Japan" | 
     country == "US" |
-    country == "Sweden"
+    country == "Sweden"|
+    country == "Russia"
 ) -> dfc
 
 lab_x_axis_confirmed <- sprintf(paste(

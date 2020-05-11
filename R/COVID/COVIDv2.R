@@ -24,14 +24,6 @@ lab_notes <- paste0(
   "sample is limited to countries with at least seven days of positive event days data.\n" 
 )
 
-#View(merged_dta)
-
-#sum(is.na(marged_dta)) gives the total missing values
-# further visualization of missing data at the end of the script
-#
-# make a tibble database from the original one as_tibble(merged_dta) to work easier
-#summary(merged_dta) summary of the data
-
 # add numbers with web scraping
 url <- "https://www.rivm.nl/coronavirus-covid-19/actueel" #define RIVM site
 RIVM <- read_html(url)
@@ -64,10 +56,14 @@ if (isTRUE(dateRIVM == Sys.Date()-1)){
     data.frame(
       country = "Netherlands",
       iso3c = "NLD",
-      date = as.Date(Sys.Date())-1, #updated for 05-05-2020
-      confirmed = 41087,
-      deaths = 5168,
+      date = as.Date(Sys.Date())-1, #updated for 10-05-2020
+      confirmed = 42627,
+      deaths = 5440,
       recovered = NA,
+      ecdc_cases = NA,
+      ecdc_deaths = NA,
+      total_tests = NA,
+      tests_units = NA,
       soc_dist = NA,
       mov_rest = NA,
       pub_health = NA,
@@ -111,6 +107,10 @@ if (isTRUE(any(nl==as.character(dateRIVM)))){
       confirmed = conf,
       deaths = death,
       recovered = NA,
+      ecdc_cases = NA,
+      ecdc_deaths = NA,
+      total_tests = NA,
+      tests_units = NA,
       soc_dist = NA,
       mov_rest = NA,
       pub_health = NA,
@@ -232,7 +232,7 @@ confirmed_dta %>% filter(  country == "Netherlands" |
                              country == "Belgium" |
                              country == "Korea, South" |
                              country == "Japan" | 
-                             country == "US" |
+                             country == "United States" |
                              country == "Sweden"|
                              country == "Russia") -> fcc
 
@@ -260,7 +260,7 @@ death_dta %>% filter(  country == "Netherlands" |
                          country == "Belgium" |
                          country == "Korea, South" |
                          country == "Japan" | 
-                         country == "US" |
+                         country == "United States" |
                          country == "Sweden"|
                        country == "Russia") -> fcd
 
@@ -282,7 +282,7 @@ ggplot(fcd %>%  filter (edate_deaths <= 70), # edate deaths is how many days you
 # Growth rate or %daily change of deaths per selected county
 
 death_dta %>% filter(country == "Netherlands" | 
-                       country== "US" | 
+                       country== "United States" | 
                        country == "Italy") -> grd # "growth rate death" copy of data for filter countries
 
 ggplot(grd %>%  filter (edate_deaths <= 70), # edate deaths is how many days you want to display from 10th death
@@ -323,7 +323,7 @@ ggplot(grd %>%  filter (edate_deaths <= 70), # edate deaths is how many days you
 
 # Growth rate or %daily change of confirmed cases per selected county
 confirmed_dta %>% filter(country == "Netherlands" | 
-                           country== "US" | 
+                           country== "United States" | 
                            country == "Italy"
 ) -> grc # copy of data for filter countries
 
@@ -345,7 +345,7 @@ ggplot(grc %>%  filter (edate_confirmed <= 70),
 
 # plots for deaths per country
 # define event time after 10th death
-# Also a require each country to have at least 7 days post event day 0
+# Also require each country to have at least 7 days post event day 0
 
 death_dta %>% filter(
   country == "Netherlands" |
@@ -356,7 +356,7 @@ death_dta %>% filter(
     country == "Belgium" |
     country == "Korea, South" |
     country == "Japan" | 
-    country == "US" |
+    country == "United States" |
     country == "Sweden" |
     country == "Russia"
 ) -> df
@@ -409,7 +409,7 @@ confirmed_dta %>% filter(
     country == "Belgium" |
     country == "Korea, South" |
     country == "Japan" | 
-    country == "US" |
+    country == "United States" |
     country == "Sweden"|
     country == "Russia"
 ) -> dfc
@@ -491,6 +491,11 @@ ggplot(dfc %>% filter (edate_confirmed <= 100),
 # remotes::install_github("joachim-gassen/tidycovid19)
 
 # #missing values plots
+#
+# sum(is.na(marged_dta)) gives the total missing values
+#
+# make a tibble database from the original one as_tibble(merged_dta) to work easier
+# summary(merged_dta) summary of the data
 #
 # missing.values <- merged_dta %>%
 #   +     gather(key = "key", value = "val") %>%

@@ -56,9 +56,9 @@ if (isTRUE(dateRIVM == Sys.Date()-1)){
     data.frame(
       country = "Netherlands",
       iso3c = "NLD",
-      date = as.Date(Sys.Date())-1, #updated for 10-05-2020
-      confirmed = 42627,
-      deaths = 5440,
+      date = as.Date(Sys.Date())-1, #updated for 03-06-2020
+      confirmed = 46733,
+      deaths = 5977,
       recovered = NA,
       ecdc_cases = NA,
       ecdc_deaths = NA,
@@ -264,7 +264,7 @@ death_dta %>% filter(  country == "Netherlands" |
                          country == "Sweden"|
                        country == "Russia") -> fcd
 
-ggplot(fcd %>%  filter (edate_deaths <= 70), # edate deaths is how many days you want to display from 10th death
+ggplot(fcd %>%  filter (edate_deaths <= 100), # edate deaths is how many days you want to display from 10th death
        aes(x = edate_deaths, color = country, y = avDailyDeaths07Pop)) + # use avDeathGR07 for 7 day moving average
   geom_line() + theme_minimal() + 
   theme(
@@ -285,7 +285,7 @@ death_dta %>% filter(country == "Netherlands" |
                        country== "United States" | 
                        country == "Italy") -> grd # "growth rate death" copy of data for filter countries
 
-ggplot(grd %>%  filter (edate_deaths <= 70), # edate deaths is how many days you want to display from 10th death
+ggplot(grd %>%  filter (edate_deaths <= 100), # edate deaths is how many days you want to display from 10th death
        aes(x = edate_deaths, color = country, y = Rate_percentD)) + # use avDeathGR07 for 7 day moving average
   geom_line() + theme_minimal() + 
   theme(
@@ -327,7 +327,7 @@ confirmed_dta %>% filter(country == "Netherlands" |
                            country == "Italy"
 ) -> grc # copy of data for filter countries
 
-ggplot(grc %>%  filter (edate_confirmed <= 70),
+ggplot(grc %>%  filter (edate_confirmed <= 100),
        aes(x = edate_confirmed, color = country, y = Rate_percentC)) + # use avConfGR07 for 7 day moving average
   geom_line() + theme_minimal() + 
   theme(

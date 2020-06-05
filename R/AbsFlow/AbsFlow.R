@@ -56,6 +56,8 @@ row.plot <- AF %>%
 # row.plot #plot the missing values per row
 grid.arrange(percentage.plot, row.plot, ncol = 2) #combine the two plots
 
+AFnmd <- na.omit(AF) # make a dataset without any missing data
+
 # associations between data objects
 #correlograms from Correlogam in R towardsdatascience.com
 library(corrplot)

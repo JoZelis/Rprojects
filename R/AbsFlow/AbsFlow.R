@@ -61,7 +61,6 @@ grid.arrange(percentage.plot, row.plot, ncol = 2) #combine the two plots
 library(corrplot)
 library(lares)
 #modify corrplot function
-dat = AF
 corrplot2 <- function(data,
                       method = "pearson",
                       sig.level = 0.05,
@@ -105,20 +104,104 @@ corrplot2 <- function(data,
   )
 }
 
-corrplot2(data = dat, method = "pearson", sig.level = 0.05, order = "original", type = "upper", tl.srt = 75)
-corr_cross(dat, max_pvalue = 0.05, top = 100)
+corrplot2(data = AF, method = "pearson", sig.level = 0.05, order = "original", type = "upper", tl.srt = 75)
+corr_cross(AF, max_pvalue = 0.05, top = 100)
 
-corr_var(dat, # name of dataset
+corr_var(AF, # name of dataset
          RLAD_1, # name of variable to focus on
          top = 50 # display top 10 correlations
 )
 
-corr_var(dat, # name of dataset
+corr_var(AF, # name of dataset
+         R_CX_1, # name of variable to focus on
+         top = 50 # display top 10 correlations
+)
+
+corr_var(AF, # name of dataset
          RRCA_1, # name of variable to focus on
          top = 50 # display top 10 correlations
 )
 
-corr_var(dat, # name of dataset
-         R_CX_1, # name of variable to focus on
+# categorize resistance data
+AF$RLADcategory <- cut(AF$RLAD_1, 
+                   breaks=c(-Inf, 336, Inf), #example: breaks=c(-Inf, 0.5, 0.6, Inf)
+                   labels=c("normal","high"))
+
+AF$RCXcategory <- cut(AF$R_CX_1, 
+                       breaks=c(-Inf, 626, Inf), #example: breaks=c(-Inf, 0.5, 0.6, Inf)
+                       labels=c("normal","high"))
+
+AF$RRCAcategory <- cut(AF$RRCA_1, 
+                       breaks=c(-Inf, 515, Inf), #example: breaks=c(-Inf, 0.5, 0.6, Inf)
+                       labels=c("normal","high"))
+
+corr_var(AF, # name of dataset
+         RLADcategory, # name of variable to focus on
+         top = 50 # display top 10 correlations
+)
+
+corr_var(AF, # name of dataset
+         RCXcategory, # name of variable to focus on
+         top = 50 # display top 10 correlations
+)
+
+corr_var(AF, # name of dataset
+         RRCAcategory, # name of variable to focus on
+         top = 50 # display top 10 correlations
+)
+
+# categorize normalized flow data
+AF$QnLADcategory <- cut(AF$QLAD_N_1, 
+                       breaks=c(-Inf, 0.330, Inf), #example: breaks=c(-Inf, 0.5, 0.6, Inf)
+                       labels=c("normal","high"))
+
+AF$QnCXcategory <- cut(AF$QCX_N_1, 
+                      breaks=c(-Inf, 0.220, Inf), #example: breaks=c(-Inf, 0.5, 0.6, Inf)
+                      labels=c("normal","high"))
+
+AF$QnRCAcategory <- cut(AF$QRCA_N_1, 
+                       breaks=c(-Inf, 0.210, Inf), #example: breaks=c(-Inf, 0.5, 0.6, Inf)
+                       labels=c("normal","high"))
+
+corr_var(AF, # name of dataset
+         QnLADcategory, # name of variable to focus on
+         top = 50 # display top 10 correlations
+)
+
+corr_var(AF, # name of dataset
+         QnCXcategory, # name of variable to focus on
+         top = 50 # display top 10 correlations
+)
+
+corr_var(AF, # name of dataset
+         QnRCAcategory, # name of variable to focus on
+         top = 50 # display top 10 correlations
+)
+
+# categorize flow data
+AF$QLADcategory <- cut(AF$QLAD_1, 
+                        breaks=c(-Inf, 0.293, Inf), #example: breaks=c(-Inf, 0.5, 0.6, Inf)
+                        labels=c("normal","high"))
+
+AF$QCXcategory <- cut(AF$QCX_1, 
+                       breaks=c(-Inf, 0.204, Inf), #example: breaks=c(-Inf, 0.5, 0.6, Inf)
+                       labels=c("normal","high"))
+
+AF$QRCAcategory <- cut(AF$QRCA_1, 
+                        breaks=c(-Inf, 0.197, Inf), #example: breaks=c(-Inf, 0.5, 0.6, Inf)
+                        labels=c("normal","high"))
+
+corr_var(AF, # name of dataset
+         QLADcategory, # name of variable to focus on
+         top = 50 # display top 10 correlations
+)
+
+corr_var(AF, # name of dataset
+         QCXcategory, # name of variable to focus on
+         top = 50 # display top 10 correlations
+)
+
+corr_var(AF, # name of dataset
+         QRCAcategory, # name of variable to focus on
          top = 50 # display top 10 correlations
 )

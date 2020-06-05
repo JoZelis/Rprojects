@@ -490,21 +490,21 @@ ggplot(dfc %>% filter (edate_confirmed <= 100),
 
 # remotes::install_github("joachim-gassen/tidycovid19)
 
-# #missing values plots
-#
+#missing values plots
+
 # sum(is.na(marged_dta)) gives the total missing values
-#
+# 
 # make a tibble database from the original one as_tibble(merged_dta) to work easier
 # summary(merged_dta) summary of the data
-#
+
 # missing.values <- merged_dta %>%
-#   +     gather(key = "key", value = "val") %>%
-#   +     mutate(is.missing = is.na(val)) %>%
-#   +     group_by(key, is.missing) %>%
-#   +     summarise(num.missing = n()) %>%
-#   +     filter(is.missing==T) %>%
-#   +     select(-is.missing) %>%
-#   +     arrange(desc(num.missing))
+#        gather(key = "key", value = "val") %>%
+#        mutate(is.missing = is.na(val)) %>%
+#        group_by(key, is.missing) %>%
+#        summarise(num.missing = n()) %>%
+#        filter(is.missing==T) %>%
+#        select(-is.missing) %>%
+#        arrange(desc(num.missing))
 # 
 # #plots for percentage of missing values
 # missing.values <- merged_dta %>%
@@ -515,24 +515,24 @@ ggplot(dfc %>% filter (edate_confirmed <= 100),
 #   group_by(key, total, isna) %>%
 #   summarise(num.isna = n()) %>%
 #   mutate(pct = num.isna / total * 100)
-# levels <- (missing.values  %>% filter(isna == T) %>%     
+# levels <- (missing.values  %>% filter(isna == T) %>%
 #              arrange(desc(pct)))$key
 # percentage.plot <- missing.values %>%
 #   ggplot() +
-#   geom_bar(aes(x = reorder(key, desc(pct)), 
-#                y = pct, fill=isna), 
+#   geom_bar(aes(x = reorder(key, desc(pct)),
+#                y = pct, fill=isna),
 #            stat = 'identity', alpha=0.8) +
 #   scale_x_discrete(limits = levels) +
-#   scale_fill_manual(name = "", 
-#                     values = c('steelblue', 'tomato3'), 
+#   scale_fill_manual(name = "",
+#                     values = c('steelblue', 'tomato3'),
 #                     labels = c("Present", "Missing")) +
 #   coord_flip() +
-#   labs(title = "Percentage of missing values", 
+#   labs(title = "Percentage of missing values",
 #        x = 'Variable', y = "% of missing values")
 # percentage.plot
 # 
 # #plot the missing values per row
-# row.plot <- df %>%
+# row.plot <- merged_dta %>%
 #   mutate(id = row_number()) %>%
 #   gather(-id, key = "key", value = "val") %>%
 #   mutate(isna = is.na(val)) %>%

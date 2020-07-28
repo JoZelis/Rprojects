@@ -56,9 +56,9 @@ if (isTRUE(dateRIVM == Sys.Date()-1)){
     data.frame(
       country = "Netherlands",
       iso3c = "NLD",
-      date = as.Date(Sys.Date())-1, #updated for 03-06-2020
-      confirmed = 46733,
-      deaths = 5977,
+      date = as.Date(Sys.Date())-1, #updated for 07-06-2020
+      confirmed = 47574,
+      deaths = 6013,
       recovered = NA,
       ecdc_cases = NA,
       ecdc_deaths = NA,

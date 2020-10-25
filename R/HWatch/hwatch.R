@@ -1,3 +1,4 @@
+# can we predict outcome (6mwt improve, QoL improve) from health watch parameters?
 library(tidyverse)
 library(readxl)
 library(vioplot)
@@ -19,3 +20,12 @@ summary(slope_pre)
 summary(slope_post)
 ImproveSlope <- slope_post - slope_pre
 View(ImproveSlope)
+
+df$avrhr_pre <- as.numeric(as.character(df$avrhr_pre))
+df$avrhr_post <- as.numeric(as.character(df$avrhr_post))
+t.test(avrhr_pre, avrhr_post, paired = TRUE)
+
+#numeric everything
+i <- c(3, 154)                                  # Specify columns you want to change
+df[ , i] <- apply(df[ , i], 2,            # Specify own function within apply
+                    function(x) as.numeric(as.character(x)))

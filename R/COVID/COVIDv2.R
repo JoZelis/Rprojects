@@ -205,7 +205,7 @@ confirmed_dta %>%
 # plot for rolling average over 7 days edate_deaths and death_dta is used for date so after 10th death, full data x = date
 confirmed_dta %>% filter(country == "Netherlands") -> cf #filter Netherlands data
 #to plot with legend go from wide to long
-long_cf <- cf %>% gather(State, Total, avDailyDeaths07:avDailyConfirmed07)
+long_cf <- cf %>% gather(State, Total, avDailyDeaths05:avDailyConfirmed05)
 ggplot(long_cf, aes(x = edate_confirmed, y = Total, group = State, colour = State)) + 
   geom_line() +
   scale_colour_discrete(name = "Cases",
@@ -221,11 +221,12 @@ ggplot(long_cf, aes(x = edate_confirmed, y = Total, group = State, colour = Stat
   labs(caption = lab_notes, 
        x = "Number of days since 100th confirmed case", 
        y = "Daily change in cases",
-       title = "Total change in deaths and confirmed cases for the Netherlands (7-day moving average)"
+       title = "Total change in deaths and confirmed cases for the Netherlands (5-day moving average)"
   )
 
 # make it interactive with library(plotly) ggplotly(the_ggplot)
 
+NumDays <- 400
 
 # "flatten the curve Europe" for confirmed
 confirmed_dta %>% filter(  country == "Netherlands" |
@@ -238,9 +239,10 @@ confirmed_dta %>% filter(  country == "Netherlands" |
                              country == "Japan" | 
                              country == "United States" |
                              country == "Sweden"|
-                             country == "Russia") -> fcc
+                             country == "United Kingdom"|
+                             country == "Australia") -> fcc
 
-ggplot(fcc %>%  filter (edate_confirmed <= 250), # edate deaths is how many days you want to display from 10th death
+ggplot(fcc %>%  filter (edate_confirmed <= NumDays), # edate deaths is how many days you want to display from 10th death
        aes(x = edate_confirmed, color = country, y = avDailyConfirmed07Pop)) + # use avDeathGR07 for 7 day moving average
   geom_line() + theme_minimal() + 
   theme(
@@ -253,7 +255,8 @@ ggplot(fcc %>%  filter (edate_confirmed <= 250), # edate deaths is how many days
        x = "Number of days since 100th confirmed case",
        y = "Confirmed rate per 100.000",
        title = "%Daily change in confirmed cases relative to the population (7-day moving average)\n"
-  )
+  ) + gghighlight(avDailyConfirmed07Pop > -1, label_key = country, use_direct_label = TRUE,
+            label_params = list(segment.color = NA, nudge_x = 1))
 
 # "flatten the curve Europe" for deaths
 death_dta %>% filter(  country == "Netherlands" |
@@ -266,9 +269,10 @@ death_dta %>% filter(  country == "Netherlands" |
                          country == "Japan" | 
                          country == "United States" |
                          country == "Sweden"|
-                       country == "Russia") -> fcd
+                         country == "United Kingdom"|
+                         country == "Australia") -> fcd
 
-ggplot(fcd %>%  filter (edate_deaths <= 250), # edate deaths is how many days you want to display from 10th death
+ggplot(fcd %>%  filter (edate_deaths <= NumDays), # edate deaths is how many days you want to display from 10th death
        aes(x = edate_deaths, color = country, y = avDailyDeaths07Pop)) + # use avDeathGR07 for 7 day moving average
   geom_line() + theme_minimal() + 
   theme(
@@ -281,7 +285,8 @@ ggplot(fcd %>%  filter (edate_deaths <= 250), # edate deaths is how many days yo
        x = "Number of days since 10th death",
        y = "Death rate per 100.000",
        title = "%Daily change in deaths relative to the population (7-day moving average)\n"
-  )
+  ) + gghighlight(avDailyDeaths07Pop > -1, label_key = country, use_direct_label = TRUE,
+                  label_params = list(segment.color = NA, nudge_x = 1))
 
 # Growth rate or %daily change of deaths per selected county
 
@@ -289,7 +294,7 @@ death_dta %>% filter(country == "Netherlands" |
                        country== "United States" | 
                        country == "Italy") -> grd # "growth rate death" copy of data for filter countries
 
-ggplot(grd %>%  filter (edate_deaths <= 250), # edate deaths is how many days you want to display from 10th death
+ggplot(grd %>%  filter (edate_deaths <= NumDays), # edate deaths is how many days you want to display from 10th death
        aes(x = edate_deaths, color = country, y = Rate_percentD)) + # use avDeathGR07 for 7 day moving average
   geom_line() + theme_minimal() + 
   theme(
@@ -298,12 +303,12 @@ ggplot(grd %>%  filter (edate_deaths <= 250), # edate deaths is how many days yo
     plot.caption = element_text(hjust = 0),
     axis.title.x = element_text(hjust = 1),
     axis.title.y = element_text(hjust = 1),) + 
-  gghighlight(TRUE, label_params = list(segment.color = NA, nudge_x = 1)) + # label_params is part of ggrepel to make sure names not overlap
+  gghighlight(Rate_percentD > -1, label_params = list(segment.color = NA, nudge_x = 1)) + # label_params is part of ggrepel to make sure names not overlap
   labs(caption = lab_notes,
        x = "Number of days since 10th death",
        y = "%change in death",
        title = "%Daily change in deaths per country\n"
-  ) + geom_smooth(method = "lm")
+  ) #+ geom_smooth(method = "lm")
 
 # animate the above plot without trend lines
 # library(gganimate)
@@ -326,12 +331,12 @@ ggplot(grd %>%  filter (edate_deaths <= 250), # edate deaths is how many days yo
 # anim_save("gif.gif") #saves it as a gif
 
 # Growth rate or %daily change of confirmed cases per selected county
-confirmed_dta %>% filter(country == "Netherlands" | 
+confirmed_dta %>% filter(country == "Netherlands" |
                            country== "United States" | 
                            country == "Italy"
 ) -> grc # copy of data for filter countries
 
-ggplot(grc %>%  filter (edate_confirmed <= 250),
+ggplot(grc %>%  filter (edate_confirmed <= NumDays),
        aes(x = edate_confirmed, color = country, y = Rate_percentC)) + # use avConfGR07 for 7 day moving average
   geom_line() + theme_minimal() + 
   theme(
@@ -340,12 +345,12 @@ ggplot(grc %>%  filter (edate_confirmed <= 250),
     plot.caption = element_text(hjust = 0),
     axis.title.x = element_text(hjust = 1),
     axis.title.y = element_text(hjust = 1),) + 
-  gghighlight(TRUE, label_params = list(segment.color = NA, nudge_x = 1)) +
+  gghighlight(Rate_percentC > -1, label_params = list(segment.color = NA, nudge_x = 1)) +
   labs(caption = lab_notes,
        x = "Number of days since 100th confirmed case",
        y = "%change in confirmed cases",
        title = "%Daily change in confirmed cases per country\n"
-  ) + geom_smooth(method = "lm")
+  ) #+ geom_smooth(method = "lm")
 
 # plots for deaths per country
 # define event time after 10th death
@@ -362,7 +367,8 @@ death_dta %>% filter(
     country == "Japan" | 
     country == "United States" |
     country == "Sweden" |
-    country == "Russia"
+    country == "United Kingdom"|
+    country == "Australia"
 ) -> df
 
 # text directly under figure left
@@ -383,18 +389,18 @@ gg_my_blob <- list(
   labs(caption = lab_notes,
        x = lab_x_axis_deaths,
        y = "Confirmed deaths (logarithmic scale)"),
-  gghighlight(TRUE,  label_key = country, use_direct_label = TRUE,
+  gghighlight(deaths > 0, label_key = country, use_direct_label = TRUE,
               label_params = list(segment.color = NA, nudge_x = 1))
 )
 
 # plot for total deaths
-ggplot(df %>% filter (edate_deaths <= 200), 
+ggplot(df %>% filter (edate_deaths <= NumDays), 
        aes(x = edate_deaths, color = country, y = deaths)) +
   geom_line() + labs(title = "Total Deaths per Country\n"
   ) + gg_my_blob
 
 # plot for deaths relative to population
-ggplot(df %>% filter (edate_deaths <= 200),
+ggplot(df %>% filter (edate_deaths <= NumDays),
        aes(x = edate_deaths, color = country, y = deaths_1e5pop)) +
   geom_line() +
   gg_my_blob +
@@ -415,7 +421,8 @@ confirmed_dta %>% filter(
     country == "Japan" | 
     country == "United States" |
     country == "Sweden"|
-    country == "Russia"
+    country == "United Kingdom"|
+    country == "Australia"
 ) -> dfc
 
 lab_x_axis_confirmed <- sprintf(paste(
@@ -436,12 +443,12 @@ gg_my_blob <- list(
   labs(caption = lab_notes,
        x = lab_x_axis_confirmed,
        y = "Confirmed cases (logarithmic scale)"),
-  gghighlight(TRUE,  label_key = country, use_direct_label = TRUE,
+  gghighlight(deaths > 0,  label_key = country, use_direct_label = TRUE,
               label_params = list(segment.color = NA, nudge_x = 1))
 )
 
 # plot for confirmed cases per county
-ggplot(dfc %>% filter (edate_confirmed <= 200), 
+ggplot(dfc %>% filter (edate_confirmed <= NumDays), 
        aes(x = edate_confirmed, color = country, y = confirmed)) +
   geom_line() +
   labs(
@@ -450,7 +457,7 @@ ggplot(dfc %>% filter (edate_confirmed <= 200),
   gg_my_blob
 
 # plot for confirmed relative to population
-ggplot(dfc %>% filter (edate_confirmed <= 200), 
+ggplot(dfc %>% filter (edate_confirmed <= NumDays), 
        aes(x = edate_confirmed, color = country, y = confirmed_1e5pop)) +
   geom_line() +
   gg_my_blob +
